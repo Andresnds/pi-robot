@@ -27,21 +27,20 @@ Press Ctrl+C to exit!
 DISPLAY_BAR = True
 
 # Brightness of the seconds bar and text
-BRIGHTNESS = 0.5
+BRIGHTNESS = 0.1
 
 # Uncomment to rotate
 #scrollphathd.rotate(180)
 
-fh = open(“hello.text”, “r”)
-print fh.readline()
-
 temp = None
 weather = None
-weather_time = datetime.now()
+weather_time = None
 def get_weather():
+    global weather_time
     now = datetime.now()
     if weather_time is not None and (now - weather_time).total_seconds() < 60:
         return
+    weather_time = now
     try:
         global weather
         global temp
@@ -54,12 +53,12 @@ def get_weather():
         main = weather["main"]
         temp = main["temp"]
     except Exception as e:
-        print e
+        print "Can't get weather", e
 
 def display_weather():
     get_weather()
     scrollphathd.write_string(
-        "%d °C" % temp, x=0, y=0, font=font5x7, brightness=BRIGHTNESS)
+        "%d C" % temp, x=0, y=0, font=font5x7, brightness=BRIGHTNESS)
 
 def display_time():
     # Grab the "seconds" component of the current time
@@ -121,21 +120,24 @@ while True:
     scrollphathd.clear()
 
     now = datetime.now()
-    try:
-        t = time.mktime(now.timetuple())
-        global BRIGHTNESS
-        if t > weather["sys"]["sunrise"] and t < weather["sys"]["sunset"]:
-            BRIGHTNESS = 0.5
-        else:
-            BRIGHTNESS = 0.2
-    except Exception e:
-        print e
-
-    if int(now.second)%60 < 50:
+    if int(now.second)%15 < 5:
         display_weather()
     else:
         display_time()
 
+    try:
+        t = time.mktime(now.timetuple())
+        global weather
+        if t > weather["sys"]["sunrise"] and t < weather["sys"]["sunset"]:
+            global BRIGHTNESS
+            BRIGHTNESS = 0.5
+        else:
+            global BRIGHTNESS
+            BRIGHTNESS = 0.2
+    except Exception as e:
+        print "Can't set brightness", e
+
+ 
     # Display our time and sleep a bit. Using 1 second in time.sleep
     # is not recommended, since you might get quite far out of phase
     # with the passing of real wall-time seconds and it'll look weird!
