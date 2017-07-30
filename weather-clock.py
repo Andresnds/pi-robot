@@ -31,6 +31,10 @@ BRIGHTNESS = 0.1
 NIGHT_BRIGHTNESS = 0.15
 DAY_BRIGHTNESS = 0.5
 
+TIME_CLOCK = 10
+TIME_WEATHER = 5
+TIME = TIME_CLOCK + TIME_WEATHER
+
 # Uncomment to rotate
 #scrollphathd.rotate(180)
 
@@ -58,7 +62,6 @@ def get_weather():
         print "Can't get weather", e
 
 def display_weather():
-    get_weather()
     scrollphathd.write_string(
         "%doC" % temp, x=0, y=0, font=font5x5, brightness=BRIGHTNESS)
 
@@ -101,7 +104,7 @@ def display_bar():
         scrollphathd.set_pixel(int(seconds_progress), 6, BRIGHTNESS)
 
 
-def display_time():
+def display_clock():
     # Display the time (HH:MM) in a 5x5 pixel font
     scrollphathd.write_string(
         time.strftime("%H:%M"),
@@ -136,16 +139,15 @@ def update_brightness():
 while True:
     scrollphathd.clear()
 
-    now = datetime.now()
-    if int(now.second)%15 < 5:
-        display_weather()
-        if weather is None:
-             display_time()
+    get_weather()
+    if weather is None or int(datetime.now().second)%TIME < TIME_CLOCK:
+        display_clock()
     else:
-        display_time()
+        display_weather()
 
     display_bar()
-    update_brightness()
+    if weather is not None:
+        update_brightness()
 
     # Display our time and sleep a bit. Using 1 second in time.sleep
     # is not recommended, since you might get quite far out of phase
