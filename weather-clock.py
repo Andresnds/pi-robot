@@ -124,7 +124,7 @@ def display_clock():
 
 def update_brightness():
     try:
-        t = time.mktime(now.timetuple())
+        t = time.mktime(datetime.now().timetuple())
         global weather
         if t > weather["sys"]["sunrise"] and t < weather["sys"]["sunset"]:
             global BRIGHTNESS
