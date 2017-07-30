@@ -27,7 +27,9 @@ Press Ctrl+C to exit!
 DISPLAY_BAR = True
 
 # Brightness of the seconds bar and text
-BRIGHTNESS = 0.1
+BRIGHTNESS = 0.0
+NIGHT_BRIGHTNESS = 0.1
+DAY_BRIGHTNESS = 0.5
 
 # Uncomment to rotate
 #scrollphathd.rotate(180)
@@ -58,9 +60,9 @@ def get_weather():
 def display_weather():
     get_weather()
     scrollphathd.write_string(
-        "%d C" % temp, x=0, y=0, font=font5x7, brightness=BRIGHTNESS)
+        "%d C" % temp, x=0, y=0, font=font5x5, brightness=BRIGHTNESS)
 
-def display_time():
+def display_bar():
     # Grab the "seconds" component of the current time
     # and convert it to a range from 0.0 to 1.0
     float_sec = (time.time() % 60) / 59.0
@@ -98,6 +100,8 @@ def display_time():
         # Just display a simple dot
         scrollphathd.set_pixel(int(seconds_progress), 6, BRIGHTNESS)
 
+
+def display_time():
     # Display the time (HH:MM) in a 5x5 pixel font
     scrollphathd.write_string(
         time.strftime("%H:%M"),
@@ -115,6 +119,19 @@ def display_time():
     if int(time.time()) % 2 == 0:
         scrollphathd.clear_rect(8, 0, 1, 5)
 
+def update_brightness():
+    try:
+        t = time.mktime(now.timetuple())
+        global weather
+        if t > weather["sys"]["sunrise"] and t < weather["sys"]["sunset"]:
+            global BRIGHTNESS
+            BRIGHTNESS = DAY_BRIGHTNESS
+        else:
+            global BRIGHTNESS
+            BRIGHTNESS = NIGHT_BRIGHTNESS
+    except Exception as e:
+        print "Can't set brightness", e
+
 
 while True:
     scrollphathd.clear()
@@ -125,19 +142,9 @@ while True:
     else:
         display_time()
 
-    try:
-        t = time.mktime(now.timetuple())
-        global weather
-        if t > weather["sys"]["sunrise"] and t < weather["sys"]["sunset"]:
-            global BRIGHTNESS
-            BRIGHTNESS = 0.5
-        else:
-            global BRIGHTNESS
-            BRIGHTNESS = 0.2
-    except Exception as e:
-        print "Can't set brightness", e
+    display_bar()
+    update_brightness()
 
- 
     # Display our time and sleep a bit. Using 1 second in time.sleep
     # is not recommended, since you might get quite far out of phase
     # with the passing of real wall-time seconds and it'll look weird!
