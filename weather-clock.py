@@ -137,7 +137,7 @@ while True:
     scrollphathd.clear()
 
     now = datetime.now()
-    if int(now.second)%15 < 5:
+    if int(now.second)%6 < 2:
         display_weather()
     else:
         display_time()
