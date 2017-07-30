@@ -135,24 +135,26 @@ def update_brightness():
     except Exception as e:
         print "Can't set brightness", e
 
+def main():
+    while True:
+        scrollphathd.clear()
 
-while True:
-    scrollphathd.clear()
+        get_weather()
+        if weather is None or int(datetime.now().second)%TIME < TIME_CLOCK:
+            display_clock()
+        else:
+            display_weather()
 
-    get_weather()
-    if weather is None or int(datetime.now().second)%TIME < TIME_CLOCK:
-        display_clock()
-    else:
-        display_weather()
+        display_bar()
+        if weather is not None:
+            update_brightness()
 
-    display_bar()
-    if weather is not None:
-        update_brightness()
+        # Display our time and sleep a bit. Using 1 second in time.sleep
+        # is not recommended, since you might get quite far out of phase
+        # with the passing of real wall-time seconds and it'll look weird!
+        #
+        # 1/10th of a second is accurate enough for a simple clock though :D
+        scrollphathd.show()
+        time.sleep(0.1)
 
-    # Display our time and sleep a bit. Using 1 second in time.sleep
-    # is not recommended, since you might get quite far out of phase
-    # with the passing of real wall-time seconds and it'll look weird!
-    #
-    # 1/10th of a second is accurate enough for a simple clock though :D
-    scrollphathd.show()
-    time.sleep(0.1)
+main()
