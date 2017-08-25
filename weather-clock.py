@@ -29,10 +29,10 @@ DISPLAY_BAR = True
 # Brightness of the seconds bar and text
 BRIGHTNESS = 0.1
 NIGHT_BRIGHTNESS = 0.15
-DAY_BRIGHTNESS = 0.5
+DAY_BRIGHTNESS = 0.3
 
-TIME_CLOCK = 55
-TIME_WEATHER = 5
+TIME_CLOCK = 20
+TIME_WEATHER = 7
 TIME = TIME_CLOCK + TIME_WEATHER
 
 # Uncomment to rotate
@@ -63,7 +63,7 @@ def get_weather():
 
 def display_weather():
     scrollphathd.write_string(
-        "%doC" % temp, x=0, y=0, font=font5x5, brightness=BRIGHTNESS)
+        "o%doC" % temp, x=0, y=0, font=font5x5, brightness=BRIGHTNESS)
 
 def display_bar():
     # Grab the "seconds" component of the current time
