@@ -28,7 +28,7 @@ DISPLAY_BAR = True
 
 # Brightness of the seconds bar and text
 BRIGHTNESS = 0.1
-NIGHT_BRIGHTNESS = 0.15
+NIGHT_BRIGHTNESS = 0.1
 DAY_BRIGHTNESS = 0.3
 
 TIME_CLOCK = 20
